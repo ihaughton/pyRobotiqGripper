@@ -427,7 +427,7 @@ class RobotiqGripper( mm.Instrument ):
         #Activate the gripper
         self.activate()
     
-    def goTo(self,position,speed=255,force=255):
+    def goTo(self,position,speed=255,force=255,wait=True):
         """Go to the position with determined speed and force.
         
         Args:
@@ -435,6 +435,7 @@ class RobotiqGripper( mm.Instrument ):
             0 being the open position and 255 being the close position.
             - speed (int): Gripper speed between 0 and 255
             - force (int): Gripper force between 0 and 255
+            - wait for action to complete
         
         Returns:
             - objectDetected (bool): True if object detected
@@ -471,6 +472,9 @@ class RobotiqGripper( mm.Instrument ):
         motionTime=0
         objectDetected=False
 
+        if not wait:
+            return None, None
+            
         while (not objectDetected) and (not motionCompleted)\
             and (motionTime<self.timeOut):
 
@@ -480,7 +484,6 @@ class RobotiqGripper( mm.Instrument ):
             #information on possible object pick-up. Ignore if gGTO == 0.
             gOBJ=self.paramDic["gOBJ"]
 
-            
             if gOBJ==1 or gOBJ==2: 
                 #Fingers have stopped due to a contact
                 objectDetected=True
